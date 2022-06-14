@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  front-web:
+    container_name: front-web
+    build:
+      context: ./
+      dockerfile: front.web.dockerfile
+      network: host
+      # args:
+      #   - CERTBOT_EMAIL=admin@timebom.be
+      #   - DOMAIN_LIST=timebom.be
+    ports:
+      - '8080:80'
+    restart: unless-stopped
+    # volumes:
+    # - ./letsencrypt/nginx:/etc/nginx/conf.d
+    # - ./letsencrypt/certificates:/etc/letsencrypt
+    # - ./letsencrypt/certbot/www:/var/www/certbot
+    # volumes:
+    #   - letsencrypt:/etc/letsencrypt
+    # environment:
+    #   - STAGING=0
+    #   - CERTBOT_EMAIL=admin@timebom.be
+    #   - DHPARAM_SIZE=4096
+    #   - RSA_KEY_SIZE=4096
+    #   - RENEWAL_INTERVAL=30d
+    #   - DEBUG=1
+    #   - ELLIPTIC_CURVE=secp256r1
+    #   - USE_ECDSA=0
+    # environment:
+    #   - NGINX_HOST=timebom.be
+    #   - NGINX_HTTP_PORT=80
+    #   - NGINX_HTTPS_PORT=443
+
+  back-authentication:
+    container_name: back-authentication
+    build:
+      context: ./
+      dockerfile: back.authentication.dockerfile
+      network: host
+    ports:
+      - '1339:1339'
+    restart: unless-stopped
+  back-back:
+    container_name: back-back
+    build:
+      context: ./
+      dockerfile: back.back.dockerfile
+      network: host
+    ports:
+      - '1337:1337'
+    restart: unless-stopped
+  back-socket:
+    container_name: back-socket
+    build:
+      context: ./
+      dockerfile: back.socket.dockerfile
+      network: host
+    ports:
+      - '1338:1338'
+    restart: unless-stopped
+  databases-redis:
+    container_name: databases-redis
+    build:
+      context: ./
+      dockerfile: databases.redis.dockerfile
+      network: host
+    ports:
+      - '6379:6379'
+# volumes:
+#   letsencrypt:
